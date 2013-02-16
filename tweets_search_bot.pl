@@ -118,13 +118,13 @@ sub quit_message {
 }
 
 sub bot_start () {
-   print "Starting bot\n";
+   print "Starting bot against $IRC_SERVER:$IRC_SERVER_PORT \n";
    $bot = Bot->new(
     
       server => $IRC_SERVER ,
       port   => $IRC_SERVER_PORT ,
       channels =>  $CHANNEL_ARR ,
-      nick => $IRC_SERVER ,
+      nick => $IRC_NICK ,
       alt_nick => $IRC_ALT_NICK ,
 
     );
