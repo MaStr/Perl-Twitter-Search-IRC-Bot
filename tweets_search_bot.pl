@@ -25,7 +25,7 @@ use Data::Dumper;
 my $last_search_id = {};
 my $nt = Net::Twitter->new( traits => [qw/API::Search WrapError/] );
 
-my $MAX_TWEEDS_PER_SEARCH = 10 ;
+my $MAX_TWEEDS_PER_SEARCH = 5 ;
 my $TICK_COUNT = 30 ;   # tick every 30 seconds
 my $MAX_EMPTY_CNT = 10 ;   # How much empty searches before disconnecting again
 my $CACHE_FILE = "tweed_bot.cache";
@@ -92,7 +92,7 @@ sub perform_search ($$) {
    }
  
    if ( $r ) {
-       print Dumper $r ;
+    #   print Dumper $r ;
     foreach my $result ( @{$r->{results}} ) {
        my $msg =  $result->{'from_user_name'} ." : ". $result->{'text'} ." - https://twitter.com/".$result->{'from_user'}."/status/".$result->{'id'} ."\n" ;
        print $msg ;
