@@ -25,13 +25,18 @@ use Data::Dumper;
 my $last_search_id = {};
 my $nt = Net::Twitter->new( traits => [qw/API::Search WrapError/] );
 
-my $MAX_TWEEDS_PER_SEARCH = 1 ;
+my $MAX_TWEEDS_PER_SEARCH = 10 ;
 my $TICK_COUNT = 30 ;   # tick every 30 seconds
 my $MAX_EMPTY_CNT = 10 ;   # How much empty searches before disconnecting again
 my $CACHE_FILE = "tweed_bot.cache";
+my $EXCLUDE_RETWEETS = 1 ;
+
 
 my $CHANNEL= "#piratebox" ;
 my $CHANNEL_ARR = [ "$CHANNEL" ];
+
+#don't connect to irc
+my $DRY_RUN_ONLY = 0 ;
 
 #----- IRC settings 
 my $IRC_SERVER      = "irc.freenode.net" ;
@@ -68,21 +73,26 @@ sub perform_search ($$) {
    my $r = "";
    my $res_found = 0;
 
+   my $api_string = $string ;
+   if ( $EXCLUDE_RETWEETS ) { 
+      print "Ignoring retweeds";
+      $api_string .= "+exclude:retweets";
+   }
    print "Starting twitter search...\n";
    if ( not $last_search_id->{$string} ) {
      print "Initial search with >$string< \n";
 #     $r = $nt->search( { q=>"$string"  } );
-      $r = $nt->search( { q=>"$string" , rpp=>"$MAX_TWEEDS_PER_SEARCH"  } );
+      $r = $nt->search( { q=>"$api_string" , rpp=>"$MAX_TWEEDS_PER_SEARCH"  } );
    } else {
      #sinceID
      print "Follow up search with >$string< using ".$last_search_id->{$string} ."\n";
-     $r = $nt->search( { q=>"$string"  , 
+     $r = $nt->search( { q=>"$api_string"  , 
                          , rpp=>"$MAX_TWEEDS_PER_SEARCH" ,  
                          since_id=>$last_search_id->{$string}  } ); 
    }
  
    if ( $r ) {
-#     print Dumper $r ;
+       print Dumper $r ;
     foreach my $result ( @{$r->{results}} ) {
        my $msg =  $result->{'from_user_name'} ." : ". $result->{'text'} ." - https://twitter.com/".$result->{'from_user'}."/status/".$result->{'id'} ."\n" ;
        print $msg ;
@@ -178,7 +188,11 @@ if ( -e  $CACHE_FILE ) {
 
 #Check if if have anything new
 if ( perform_search("Piratebox" , 0 ) > 0 ) {
-	eval { bot_start; } ;
+
+   if ( $DRY_RUN_ONLY ) {
+      exit ;
+   }
+   eval { bot_start; } ;
 }
 
 print "Writing cache file $CACHE_FILE  .. ";
