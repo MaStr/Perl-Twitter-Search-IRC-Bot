@@ -106,13 +106,6 @@ sub perform_search ($$) {
        }
        $res_found++;
     }
-    if ( $res_found == 0 ) {
-        if (  $MAX_EMPTY_CNT-- <= 0 ) {
-	    print "Shutdown bot because there where no new tweeds anymore\n";
-            my $msg =  $bot->quit_message();
-	    $bot->shutdown( $msg  );   
-        }
-    }
   } else {
     #Error?
     print Dumper $nt->get_error;
