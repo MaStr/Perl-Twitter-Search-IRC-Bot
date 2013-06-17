@@ -93,7 +93,7 @@ sub perform_search ($$) {
      #sinceID
      print "Follow up search with >$string< using ".$last_search_id->{$string} ."\n";
      $r = $nt->search( { q=>"$api_string"  , 
-                         , rpp=>"$MAX_TWEEDS_PER_SEARCH" ,  
+                         , count=>"$MAX_TWEEDS_PER_SEARCH" ,  
                          since_id=>$last_search_id->{$string}  } ); 
    }
  
