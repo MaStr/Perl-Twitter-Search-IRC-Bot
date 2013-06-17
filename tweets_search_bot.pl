@@ -23,7 +23,13 @@ use strict;
 use Data::Dumper;
 
 my $last_search_id = {};
-my $nt = Net::Twitter->new( traits => [qw/API::Search WrapError/] );
+my $nt = Net::Twitter->new( traits => [qw/API::RESTv1_1/], 
+	#Get these data from dev.twitter.com
+      consumer_key        => 'x',
+      consumer_secret     => 'x',
+      access_token        => 'x',
+      access_token_secret => 'x',
+);
 
 my $MAX_TWEEDS_PER_SEARCH = 5 ;
 my $TICK_COUNT = 30 ;   # tick every 30 seconds
@@ -92,12 +98,13 @@ sub perform_search ($$) {
    }
  
    if ( $r ) {
-    #   print Dumper $r ;
-    foreach my $result ( @{$r->{results}} ) {
-       my $msg =  $result->{'from_user_name'} ." : ". $result->{'text'} ." - https://twitter.com/".$result->{'from_user'}."/status/".$result->{'id'} ."\n" ;
+#      print Dumper $r ;
+    foreach my $result ( @{$r->{statuses}} ) {
+       my $msg =  $result->{'user'}->{'name'} ." : ". $result->{'text'} ." - https://twitter.com/".$result->{'user'}->{'screen_name'}."/status/".$result->{'id'} ."\n" ;
        print $msg ;
        if (  $bot_run ) {
            bot_send_tweet ( $msg );
+	   sleep (1);
        }
        if ( $update_cache ) {
            save_max_id( $string , $result->{'id'} ); 
