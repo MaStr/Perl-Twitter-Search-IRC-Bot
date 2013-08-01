@@ -88,7 +88,7 @@ sub perform_search ($$) {
    if ( not $last_search_id->{$string} ) {
      print "Initial search with >$string< \n";
 #     $r = $nt->search( { q=>"$string"  } );
-      $r = $nt->search( { q=>"$api_string" , rpp=>"$MAX_TWEEDS_PER_SEARCH"  } );
+      $r = $nt->search( { q=>"$api_string" , count=>"$MAX_TWEEDS_PER_SEARCH"  } );
    } else {
      #sinceID
      print "Follow up search with >$string< using ".$last_search_id->{$string} ."\n";
