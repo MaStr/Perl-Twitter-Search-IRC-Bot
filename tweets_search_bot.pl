@@ -29,6 +29,7 @@ my $nt = Net::Twitter->new( traits => [qw/API::RESTv1_1/],
       consumer_secret     => 'x',
       access_token        => 'x',
       access_token_secret => 'x',
+      ssl		  => 1,
 );
 
 my $MAX_TWEEDS_PER_SEARCH = 5 ;
