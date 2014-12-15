@@ -106,7 +106,7 @@ sub perform_search ($$) {
 #      print Dumper $r ;
     foreach my $result ( @{$r->{statuses}} ) {
        $result->{'cleaned_text'} = HTML::Entities::decode_entities ( $result->{'text'});
-       $result->{'cleaned_text'} =~ s/\R//g;
+       $result->{'cleaned_text'} =~ s/\R/ /g;
 
        my $msg =  $result->{'user'}->{'name'} ." : ". $result->{'cleaned_text'}  ." - 
 https://twitter.com/".$result->{'user'}->{'screen_name'}."/status/".$result->{'id'} ."\n" ;
