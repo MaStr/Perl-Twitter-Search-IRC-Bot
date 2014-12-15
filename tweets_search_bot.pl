@@ -14,10 +14,14 @@ use Scalar::Util 'blessed';
 
 use Storable ;
 
+use HTML::Entities ();
+
+
 package Bot;
 use base qw(Bot::BasicBot);
 use warnings;
 use strict;
+
 
 
 use Data::Dumper;
@@ -101,7 +105,12 @@ sub perform_search ($$) {
    if ( $r ) {
 #      print Dumper $r ;
     foreach my $result ( @{$r->{statuses}} ) {
-       my $msg =  $result->{'user'}->{'name'} ." : ". $result->{'text'} ." - https://twitter.com/".$result->{'user'}->{'screen_name'}."/status/".$result->{'id'} ."\n" ;
+       $result->{'cleaned_text'} = HTML::Entities::decode_entities ( $result->{'text'});
+       $result->{'cleaned_text'} =~ s/\R//g;
+
+       my $msg =  $result->{'user'}->{'name'} ." : ". $result->{'cleaned_text'}  ." - 
+https://twitter.com/".$result->{'user'}->{'screen_name'}."/status/".$result->{'id'} ."\n" ;
+
        print $msg ;
        if (  $bot_run ) {
            bot_send_tweet ( $msg );
